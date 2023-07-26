@@ -1,8 +1,8 @@
 import express from "express";
-import colors from "colors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoute.js";
 import cors from "cors";
 
 //configure env
@@ -14,11 +14,13 @@ connectDB();
 //rest object
 const app = express();
 
-//middlewares
-app.use(cors()); 
-app.use(express.json()); 
-app.use(morgan("dev"));
+//middelwares
+app.use(cors()); // we are using different ports for backend and frontend and chances are that cors error occur-> to prvent this we use cors();
+app.use(express.json()); // to send json format data
+app.use(morgan("dev")); // morgan pckg to listen to api changes in terminal
 
+//routes
+app.use("/api/v1/auth", authRoutes);
 
 //rest api
 app.get("/", (req, res) => {
