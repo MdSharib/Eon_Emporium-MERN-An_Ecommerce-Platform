@@ -1,5 +1,4 @@
-import userModel from "../models/userModel.js";
-import orderModel from "../models/orderModel.js";
+
 
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
@@ -31,6 +30,7 @@ export const registerController = async (req, res) => {
     //check user
     const exisitingUser = await userModel.findOne({ email });
     //exisiting loginController
+    // if true means email already exist
     if (exisitingUser) {
       return res.status(200).send({
         success: false,
@@ -38,7 +38,7 @@ export const registerController = async (req, res) => {
       });
     }
     //registering user
-    const hashedPassword = await hashPassword(password); 
+    const hashedPassword = await hashPassword(password); //we hashed user pass using bcrypt pckg=== added security
     //save
     const user = await new userModel({
       name,
@@ -92,7 +92,7 @@ export const loginController = async (req, res) => {
       });
     }
     //adding secret token from env
-    // adding JWT token
+    // this jwt token in protecting our routes. we use a middleware and then compare this token and only if true we show the following route
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
